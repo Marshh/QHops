@@ -18,7 +18,7 @@ We plan on utilizing deep q learning with convolutional layers and also evolutio
  
 We will utilize the primary metric of time for our agent as it traverses through a minecraft course. The evaluation data will consist of edge-case parkour courses the agent will not train on to see if it generalizes to the nuances of multiple parkour obstacles we wish to have as our building blocks for our parkour courses.
  
-To analyze our agent qualitatively we will have our agent traverse a multitude of courses to demonstrate its generalizability. We will handcraft parkour courses which will highlight the primary challenges present for each obstacle type. We will visualize the internals of our agent by saving iterations of our agent and compare their functionalities within courses. Our moonshot case is to be able to generalize to parkour courses we handpick form professional parkour course websites. 
+To analyze our agent qualitatively we will have our agent traverse a multitude of courses to demonstrate its generalizability. We will handcraft parkour courses which will highlight the primary challenges present for each obstacle type. We will visualize the internals of our agent by saving iterations of our agent and compare their functionalities within courses. Our moonshot case is to be able to generalize to parkour courses we handpick from professional parkour course websites. 
 
 ### Goals
 
