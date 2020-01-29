@@ -1,12 +1,12 @@
 ## QHops
 
-A Minecraft agent that learns to complete parkour courses through reinforcement learning /n
-Group 49 /n
-Interview time: 1:45pm /n 
-Members:/n 
-Daniel Chiu /n
-Joseph Lopez /n
-Marshall Nguyen /n
+A Minecraft agent that learns to complete parkour courses through reinforcement learning <br>
+Group 49 <br>
+Interview time: 1:45pm <br> 
+Members:<br>
+Daniel Chiu <br>
+Joseph Lopez <br>
+Marshall Nguyen <br>
 
 ### Summary
 
