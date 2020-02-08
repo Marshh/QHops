@@ -172,7 +172,7 @@ class TabQAgent(object):
 
         self.grid = Grid()
 
-        self.actions = ["move 1", "jump 1", "jump 0", "turn .5", "turn 0"]
+        self.actions = ["move 1", "move -1", "jump 1", "jump 0", "turn .5", "turn 0", "turn -.5"]
         self.q_table = {}
         self.canvas = None
         self.root = None
