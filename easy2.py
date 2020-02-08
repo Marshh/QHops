@@ -81,7 +81,7 @@ missionXML = '''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 			</ObservationFromGrid>
 			<ContinuousMovementCommands turnSpeedDegs="900"/>
                                                     <RewardForTouchingBlockType>
-                                    <Block reward="-100.0" type="lava" behaviour="onceOnly"/>
+                                    <Block reward="-100.0" type="bedrock" behaviour="onceOnly"/>
                                     <Block reward="100.0" type="lapis_block" behaviour="onceOnly"/>
                                   </RewardForTouchingBlockType>
                                   <RewardForSendingCommand reward="-1" />
@@ -97,7 +97,7 @@ missionXML = '''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 	</AgentSection>
 </Mission>'''
 
-'''
+
 class Grid:
 	offset = {
 		"NORTH" : (-1, 0),
@@ -154,7 +154,7 @@ class Grid:
 		for row in self.grid:
 			print(row)
 
-'''
+
 
 class TabQAgent(object):
     """Tabular Q-learning agent for discrete state/action spaces."""
@@ -170,7 +170,9 @@ class TabQAgent(object):
         self.logger.handlers = []
         self.logger.addHandler(logging.StreamHandler(sys.stdout))
 
-        self.actions = ["move 1", "jump 1", "jump 0", "turn 1", "turn 0"]
+        self.grid = Grid()
+
+        self.actions = ["move 1", "jump 1", "jump 0", "turn .5", "turn 0"]
         self.q_table = {}
         self.canvas = None
         self.root = None
@@ -272,6 +274,21 @@ class TabQAgent(object):
                     for reward in world_state.rewards:
                         current_r += reward.getValue()
                     if world_state.is_mission_running and len(world_state.observations)>0 and not world_state.observations[-1].text=="{}":
+
+                        msg = world_state.observations[-1].text
+                        observations = json.loads(msg)
+
+                        self.grid.updateGrid(observations.get(u'floor7x7', 0))
+                        self.grid.updateDir(observations.get(u'Yaw'))
+                        self.grid.print()
+
+                        ## Figure out good amount to reward based on position and observations
+    
+                        for layer in self.grid.grid:
+                            if("gold_block" in layer):
+                                total_reward += 1
+                            if("lapis_block" in layer):
+                                total_reward += 25
                         total_reward += self.act(world_state, agent_host, current_r)
                         break
                     if not world_state.is_mission_running:
@@ -295,6 +312,23 @@ class TabQAgent(object):
                     for reward in world_state.rewards:
                         current_r += reward.getValue()
                     if world_state.is_mission_running and len(world_state.observations)>0 and not world_state.observations[-1].text=="{}":
+                        
+                        total_reward += self.act(world_state, agent_host, current_r)
+
+                        msg = world_state.observations[-1].text
+                        observations = json.loads(msg)
+
+                        self.grid.updateGrid(observations.get(u'floor7x7', 0))
+                        self.grid.updateDir(observations.get(u'Yaw'))
+                        self.grid.print()
+
+                        ## Figure out good amount to reward based on position and observations
+    
+                        for layer in self.grid.grid:
+                            if("gold_block" in layer):
+                                total_reward += 1
+                            if("lapis_block" in layer):
+                                total_reward += 25
                         total_reward += self.act(world_state, agent_host, current_r)
                         break
                     if not world_state.is_mission_running:
