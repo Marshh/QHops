@@ -36,9 +36,13 @@ import logging
 import time
 import random
 import pathlib
+import platform
 
 level_path = str(pathlib.Path().absolute())
-level_path += "\\EasyWalk"
+if platform.system() == "Windows":
+    level_path += "\\EasyWalk"
+else:
+    level_path += "/EasyWalk"
 
 if sys.version_info[0] == 2:
     # Workaround for https://github.com/PythonCharmers/python-future/issues/262
@@ -333,7 +337,11 @@ class TabQAgent(object):
                         ypos = observations.get(u'YPos')
                         zpos = observations.get(u'ZPos')
 
-                        print(type(xpos))
+                        xpos = math.floor(xpos)
+                        ypos = math.floor(xpos)
+                        zpos = math.floor(xpos)
+
+                        # print(type(xpos))
                         # self.grid.print()
 
                         ## Figure out good amount to reward based on position and observations
