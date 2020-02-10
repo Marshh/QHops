@@ -35,6 +35,10 @@ import numpy
 import logging
 import time
 import random
+import pathlib
+
+level_path = str(pathlib.Path().absolute())
+level_path += "\\EasyWalk"
 
 if sys.version_info[0] == 2:
     # Workaround for https://github.com/PythonCharmers/python-future/issues/262
@@ -61,7 +65,7 @@ missionXML = '''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 			<Weather>clear</Weather>
 		</ServerInitialConditions>
 		<ServerHandlers>
-			<FileWorldGenerator src="C:\\Projects\\QHops\\QHops\\EasyWalk"/>
+			<FileWorldGenerator src="''' + level_path + '''"/>
 				<ServerQuitFromTimeUp timeLimitMs="15000"/>
 				<ServerQuitWhenAnyAgentFinishes/>
 			</ServerHandlers>
@@ -172,10 +176,14 @@ class TabQAgent(object):
 
         self.grid = Grid()
 
-        self.actions = ["move 1", "move -1", "jump 1", "jump 0", "turn .5", "turn 0", "turn -.5"]
+        # get rid of move -1 because parkour players don't move backwards
+        self.actions = ["move 1", "jump 1", "jump 0", "turn .5", "turn 0", "turn -.5"]
         self.q_table = {}
         self.canvas = None
         self.root = None
+
+        self.visited = {}
+
 
     def updateQTable( self, reward, current_state ):
         """Change q_table to reflect what we have learnt."""
@@ -219,7 +227,7 @@ class TabQAgent(object):
         if self.prev_s is not None and self.prev_a is not None:
             self.updateQTable( current_r, current_s )
 
-        self.drawQ( curr_x = int(obs[u'XPos']), curr_y = int(obs[u'ZPos']) )
+        # self.drawQ( curr_x = int(obs[u'XPos']), curr_y = int(obs[u'ZPos']) )
 
         # select the next action
         rnd = random.random()
@@ -280,7 +288,7 @@ class TabQAgent(object):
 
                         self.grid.updateGrid(observations.get(u'floor7x7', 0))
                         self.grid.updateDir(observations.get(u'Yaw'))
-                        self.grid.print()
+                        # self.grid.print()
 
                         ## Figure out good amount to reward based on position and observations
     
@@ -320,9 +328,20 @@ class TabQAgent(object):
 
                         self.grid.updateGrid(observations.get(u'floor7x7', 0))
                         self.grid.updateDir(observations.get(u'Yaw'))
-                        self.grid.print()
+
+                        xpos = observations.get(u'XPos')
+                        ypos = observations.get(u'YPos')
+                        zpos = observations.get(u'ZPos')
+
+                        print(type(xpos))
+                        # self.grid.print()
 
                         ## Figure out good amount to reward based on position and observations
+
+                        #IDEAS:
+                        # Reward agent whenever it encounters a new block
+                        # new block means that this block hasn't been observed in the grid yet
+                        # maybe make a dict w/ coordinate tuples
     
                         for layer in self.grid.grid:
                             if("gold_block" in layer):
@@ -342,51 +361,51 @@ class TabQAgent(object):
         if self.prev_s is not None and self.prev_a is not None:
             self.updateQTableFromTerminatingState( current_r )
             
-        self.drawQ()
+        # self.drawQ()
     
         return total_reward
         
-    def drawQ( self, curr_x=None, curr_y=None ):
-        scale = 40
-        world_x = 6
-        world_y = 14
-        if self.canvas is None or self.root is None:
-            self.root = tk.Tk()
-            self.root.wm_title("Q-table")
-            self.canvas = tk.Canvas(self.root, width=world_x*scale, height=world_y*scale, borderwidth=0, highlightthickness=0, bg="black")
-            self.canvas.grid()
-            self.root.update()
-        self.canvas.delete("all")
-        action_inset = 0.1
-        action_radius = 0.1
-        curr_radius = 0.2
-        action_positions = [ ( 0.5, action_inset ), ( 0.5, 1-action_inset ), ( action_inset, 0.5 ), ( 1-action_inset, 0.5 ) ]
-        # (NSWE to match action order)
-        min_value = -20
-        max_value = 20
-        for x in range(world_x):
-            for y in range(world_y):
-                s = "%d:%d" % (x,y)
-                self.canvas.create_rectangle( x*scale, y*scale, (x+1)*scale, (y+1)*scale, outline="#fff", fill="#000")
-                for action in range(4):
-                    if not s in self.q_table:
-                        continue
-                    value = self.q_table[s][action]
-                    color = int( 255 * ( value - min_value ) / ( max_value - min_value )) # map value to 0-255
-                    color = max( min( color, 255 ), 0 ) # ensure within [0,255]
-                    color_string = '#%02x%02x%02x' % (255-color, color, 0)
-                    self.canvas.create_oval( (x + action_positions[action][0] - action_radius ) *scale,
-                                             (y + action_positions[action][1] - action_radius ) *scale,
-                                             (x + action_positions[action][0] + action_radius ) *scale,
-                                             (y + action_positions[action][1] + action_radius ) *scale, 
-                                             outline=color_string, fill=color_string )
-        if curr_x is not None and curr_y is not None:
-            self.canvas.create_oval( (curr_x + 0.5 - curr_radius ) * scale, 
-                                     (curr_y + 0.5 - curr_radius ) * scale, 
-                                     (curr_x + 0.5 + curr_radius ) * scale, 
-                                     (curr_y + 0.5 + curr_radius ) * scale, 
-                                     outline="#fff", fill="#fff" )
-        self.root.update()
+    # def drawQ( self, curr_x=None, curr_y=None ):
+    #     scale = 40
+    #     world_x = 6
+    #     world_y = 14
+    #     if self.canvas is None or self.root is None:
+    #         self.root = tk.Tk()
+    #         self.root.wm_title("Q-table")
+    #         self.canvas = tk.Canvas(self.root, width=world_x*scale, height=world_y*scale, borderwidth=0, highlightthickness=0, bg="black")
+    #         self.canvas.grid()
+    #         self.root.update()
+    #     self.canvas.delete("all")
+    #     action_inset = 0.1
+    #     action_radius = 0.1
+    #     curr_radius = 0.2
+    #     action_positions = [ ( 0.5, action_inset ), ( 0.5, 1-action_inset ), ( action_inset, 0.5 ), ( 1-action_inset, 0.5 ) ]
+    #     # (NSWE to match action order)
+    #     min_value = -20
+    #     max_value = 20
+    #     for x in range(world_x):
+    #         for y in range(world_y):
+    #             s = "%d:%d" % (x,y)
+    #             self.canvas.create_rectangle( x*scale, y*scale, (x+1)*scale, (y+1)*scale, outline="#fff", fill="#000")
+    #             for action in range(4):
+    #                 if not s in self.q_table:
+    #                     continue
+    #                 value = self.q_table[s][action]
+    #                 color = int( 255 * ( value - min_value ) / ( max_value - min_value )) # map value to 0-255
+    #                 color = max( min( color, 255 ), 0 ) # ensure within [0,255]
+    #                 color_string = '#%02x%02x%02x' % (255-color, color, 0)
+    #                 self.canvas.create_oval( (x + action_positions[action][0] - action_radius ) *scale,
+    #                                          (y + action_positions[action][1] - action_radius ) *scale,
+    #                                          (x + action_positions[action][0] + action_radius ) *scale,
+    #                                          (y + action_positions[action][1] + action_radius ) *scale, 
+    #                                          outline=color_string, fill=color_string )
+    #     if curr_x is not None and curr_y is not None:
+    #         self.canvas.create_oval( (curr_x + 0.5 - curr_radius ) * scale, 
+    #                                  (curr_y + 0.5 - curr_radius ) * scale, 
+    #                                  (curr_x + 0.5 + curr_radius ) * scale, 
+    #                                  (curr_y + 0.5 + curr_radius ) * scale, 
+    #                                  outline="#fff", fill="#fff" )
+    #     self.root.update()
 # Create default Malmo objects:
 
 agent_host = MalmoPython.AgentHost()
