@@ -37,6 +37,7 @@ import time
 import random
 import pathlib
 import platform
+import math
 
 level_path = str(pathlib.Path().absolute())
 if platform.system() == "Windows":
@@ -186,8 +187,6 @@ class TabQAgent(object):
         self.canvas = None
         self.root = None
 
-        self.visited = {}
-
 
     def updateQTable( self, reward, current_state ):
         """Change q_table to reflect what we have learnt."""
@@ -269,6 +268,8 @@ class TabQAgent(object):
         self.prev_a = None
         
         is_first_action = True
+
+        visited = {}
         
         # main loop:
         world_state = agent_host.getWorldState()
@@ -338,8 +339,15 @@ class TabQAgent(object):
                         zpos = observations.get(u'ZPos')
 
                         xpos = math.floor(xpos)
-                        ypos = math.floor(xpos)
-                        zpos = math.floor(xpos)
+                        ypos = math.floor(ypos)
+                        zpos = math.floor(zpos)
+
+                        coord = (xpos, zpos) #ypos is vertical height
+                        if coord not in visited:
+                            total_reward += 10
+                            visited[coord] = 1
+                            # print("new:", xpos, zpos)
+
 
                         # print(type(xpos))
                         # self.grid.print()
