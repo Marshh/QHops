@@ -29,6 +29,16 @@ import sys
 import time
 import json
 import numpy
+import pathlib
+import platform
+
+import grid
+
+level_path = str(pathlib.Path().absolute())
+if platform.system() == "Windows":
+    level_path += "\\EasyWalk"
+else:
+    level_path += "/EasyWalk"
 
 if sys.version_info[0] == 2:
 	sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)  # flush print output immediately
@@ -50,7 +60,7 @@ missionXML = '''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 			<Weather>clear</Weather>
 		</ServerInitialConditions>
 		<ServerHandlers>
-			<FileWorldGenerator src="C:\\Users\\Daniel.Daniel-HP\\Desktop\\Malmo Project\\QHops\\EasyWalk"/>
+			<FileWorldGenerator src="''' + level_path + '''"/>
 				<ServerQuitFromTimeUp timeLimitMs="15000"/>
 				<ServerQuitWhenAnyAgentFinishes/>
 			</ServerHandlers>
@@ -183,7 +193,7 @@ print("Mission running ", end=' ')
 # TODO: make sure to figure out agent's angle to determine which blocks are in front of it
 
 time.sleep(1) #to make sure everything is spawned in; might remove later
-grid = Grid()
+my_grid = grid.Grid()
 
 agent_host.sendCommand("move 1")
 
@@ -193,7 +203,7 @@ turn_target = 0
 
 
 while world_state.is_mission_running:
-	print(".", end="")
+	# print(".", end="")
 	# time.sleep(0.1)
 
 	world_state = agent_host.getWorldState()
@@ -205,29 +215,30 @@ while world_state.is_mission_running:
 		msg = world_state.observations[-1].text
 		observations = json.loads(msg)
 
-		grid.updateGrid(observations.get(u'floor7x7', 0))
-		grid.updateDir(observations.get(u'Yaw'))
-		grid.print()
+		my_grid.update(observations.get(u'floor7x7', 0))
 
-		if agent_state == "walking":
-			front = grid.check("front")
-			if front[-1] == "air" and front[-2] == "air":
-				#decide which way to turn
-				left = grid.check("left")
-				right = grid.check("right")
-				lcount = left.count("air")
-				rcount = right.count("air")
-				if lcount < rcount:
-					agent_host.sendCommand("turn -1")
-				else:
-					agent_host.sendCommand("turn 1")
-				agent_state = "turning"
-		elif agent_state == "turning":
-			agent_host.sendCommand("turn 0")
-			agent_state = "walking"
+		my_grid.print()
+		print(my_grid.arr)
+
+		# if agent_state == "walking":
+		# 	front = grid.check("front")
+		# 	if front[-1] == "air" and front[-2] == "air":
+		# 		#decide which way to turn
+		# 		left = grid.check("left")
+		# 		right = grid.check("right")
+		# 		lcount = left.count("air")
+		# 		rcount = right.count("air")
+		# 		if lcount < rcount:
+		# 			agent_host.sendCommand("turn -1")
+		# 		else:
+		# 			agent_host.sendCommand("turn 1")
+		# 		agent_state = "turning"
+		# elif agent_state == "turning":
+		# 	agent_host.sendCommand("turn 0")
+		# 	agent_state = "walking"
 
 
-	time.sleep(0.1)
+	time.sleep(0.5)
 			
 
 print()

@@ -39,6 +39,8 @@ import pathlib
 import platform
 import math
 
+from grid import Grid
+
 level_path = str(pathlib.Path().absolute())
 if platform.system() == "Windows":
     level_path += "\\EasyWalk"
@@ -105,64 +107,6 @@ missionXML = '''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 		</AgentHandlers>
 	</AgentSection>
 </Mission>'''
-
-
-class Grid:
-	offset = {
-		"NORTH" : (-1, 0),
-		"SOUTH" : (1, 0),
-		"EAST" : (0, 1),
-		"WEST" : (0, -1)
-	}
-	yaw_lookup = {
-		"NORTH" : 0,
-		"SOUTH" : 180,
-		"EAST" : 90,
-		"WEST": -90
-	}
-
-	def __init__(self):
-		self.grid = [["NULL"] * 7 for i in range(7)]
-		self.dir = "NORTH"
-
-	def updateGrid(self, json_grid):
-		for index, s in enumerate(json_grid):
-			i = index // 7
-			j = index % 7
-			self.grid[6-i][6-j] = s
-
-	def updateDir(self, json_yaw):
-		deg = int(json_yaw)
-		if deg > -45 and deg < 45:
-			self.dir = "NORTH"
-		elif deg > 45 and deg < 135:
-			self.dir = "EAST"
-		elif deg < -45 and deg > -135:
-			self.dir = "WEST"
-		else:
-			self.dir = "SOUTH"
-
-	# "front", "left", "right", "black"
-	def check(self, direction):
-		g = self.grid
-		i, j = self.offset[self.dir]
-		if direction == "left":
-			i, j = -j, i
-		elif direction == "right":
-			i, j = j, -i
-		elif direction == "back":
-			i, j = -i, -j
-
-		li = []
-		for x in range(1, 4):
-			li.append(g[3+i*x][3+j*x])
-		return li
-
-	def print(self):
-		print("Direction:", self.dir)
-		for row in self.grid:
-			print(row)
-
 
 
 class TabQAgent(object):
@@ -291,8 +235,7 @@ class TabQAgent(object):
                         msg = world_state.observations[-1].text
                         observations = json.loads(msg)
 
-                        self.grid.updateGrid(observations.get(u'floor7x7', 0))
-                        self.grid.updateDir(observations.get(u'Yaw'))
+                        self.grid.update(observations.get(u'floor7x7', 0))
                         # self.grid.print()
 
                         ## Figure out good amount to reward based on position and observations
@@ -331,8 +274,7 @@ class TabQAgent(object):
                         msg = world_state.observations[-1].text
                         observations = json.loads(msg)
 
-                        self.grid.updateGrid(observations.get(u'floor7x7', 0))
-                        self.grid.updateDir(observations.get(u'Yaw'))
+                        self.grid.update(observations.get(u'floor7x7', 0))
 
                         xpos = observations.get(u'XPos')
                         ypos = observations.get(u'YPos')
