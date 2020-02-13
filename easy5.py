@@ -114,7 +114,7 @@ class TabQAgent(object):
     """Tabular Q-learning agent for discrete state/action spaces."""
 
     def __init__(self):
-        self.epsilon = 0.01 # chance of taking a random action instead of the best
+        self.epsilon = 0.05 # chance of taking a random action instead of the best
 
         self.logger = logging.getLogger(__name__)
         if False: # True if you want to see more information
@@ -127,7 +127,7 @@ class TabQAgent(object):
         self.grid = Grid()
 
         # get rid of move -1 because parkour players don't move backwards
-        self.actions = ["move 1",  "turn .125", "turn 0", "turn -.125"]
+        self.actions = ["move 1",  "turn .25", "turn 0", "turn -.25"]
 
         self.q_table = {}
         self.canvas = None
@@ -136,6 +136,7 @@ class TabQAgent(object):
         self.jumping = False
         self.moving = False
         self.grounded = True
+        self.last_coords = (592.0, 72)
 
 
     def updateQTable( self, reward, current_state ):
@@ -199,51 +200,6 @@ class TabQAgent(object):
 
         # update Q values
         if self.prev_s is not None and self.prev_a is not None:
-            visited = set()
-            observed = set()
-            msg = world_state.observations[-1].text
-            observations = json.loads(msg)
-
-            self.grid.update(observations.get(u'floor7x7', 0))
-
-            xpos = observations.get(u'XPos')
-            ypos = observations.get(u'YPos')
-            zpos = observations.get(u'ZPos')
-
-            if ypos.is_integer():
-                self.grounded = True
-            if not ypos.is_integer():
-                self.grounded = False
-
-            gr = self.grid.grid
-
-                        
-
-            ## current pos assuming flat course
-                        
-
-            xpos = math.floor(xpos)
-            ypos = math.floor(ypos)
-            zpos = math.floor(zpos)
-
-            current_coord = (xpos,zpos)
-                        
-            if current_coord not in visited and gr[3][3] == "gold_block":
-                            
-                current_r += 12.5
-                visited.add(current_coord)
-
-                        
-                            
-                        
-            for i in range(7):
-                for j in range(7):
-                    bl = gr[i][j]
-                    if bl == "lapis_block":
-                        coord = (xpos + j - 3, zpos + i - 3)
-                        if coord not in observed:
-                            observed.add(coord)
-                            current_r += 5
             self.updateQTable( current_r, current_s )
 
         # self.drawQ( curr_x = int(obs[u'XPos']), curr_y = int(obs[u'ZPos']) )
@@ -313,15 +269,9 @@ class TabQAgent(object):
                     for reward in world_state.rewards:
                         current_r += reward.getValue()
                     if world_state.is_mission_running and len(world_state.observations)>0 and not world_state.observations[-1].text=="{}":
-
-                        msg = world_state.observations[-1].text
-                        observations = json.loads(msg)
-
-                        self.grid.update(observations.get(u'floor7x7', 0))
                         # self.grid.print()
 
                         ## Figure out good amount to reward based on position and observations
-            
                         
                         total_reward += self.act(world_state, agent_host, current_r)
                         break
@@ -346,6 +296,50 @@ class TabQAgent(object):
                     for reward in world_state.rewards:
                         current_r += reward.getValue()
                     if world_state.is_mission_running and len(world_state.observations)>0 and not world_state.observations[-1].text=="{}":  
+                        visited = set()
+                        observed = set()
+                        msg = world_state.observations[-1].text
+                        observations = json.loads(msg)
+
+                        self.grid.update(observations.get(u'floor7x7', 0))
+
+                        xpos = observations.get(u'XPos')
+                        ypos = observations.get(u'YPos')
+                        zpos = observations.get(u'ZPos')
+
+                        if ypos.is_integer():
+                            self.grounded = True
+                        if not ypos.is_integer():
+                            self.grounded = False
+
+                        gr = self.grid.grid
+
+                                    
+
+                        ## current pos assuming flat course
+                                    
+
+                        xpos = math.floor(xpos)
+                        ypos = math.floor(ypos)
+                        zpos = math.floor(zpos)
+
+                        current_coord = (xpos,zpos)
+                        
+                        if current_coord not in visited:
+                                        
+                            current_r += 5
+                            visited.add(current_coord)
+                        if((xpos,zpos) != self.last_coords):
+                            current_r+= 2
+                        
+                        for i in range(7):
+                            for j in range(7):
+                                bl = gr[i][j]
+                                if bl == "lapis_block":
+                                    coord = (xpos + j - 3, zpos + i - 3)
+                                    if coord not in observed:
+                                        observed.add(coord)
+                                        current_r += 3
                         total_reward += self.act(world_state, agent_host, current_r)
                         break
                     if not world_state.is_mission_running:
