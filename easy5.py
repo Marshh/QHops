@@ -114,7 +114,7 @@ class TabQAgent(object):
     """Tabular Q-learning agent for discrete state/action spaces."""
 
     def __init__(self):
-        self.epsilon = 0.05 # chance of taking a random action instead of the best
+        self.epsilon = 0.01 # chance of taking a random action instead of the best
 
         self.logger = logging.getLogger(__name__)
         if False: # True if you want to see more information
@@ -272,6 +272,10 @@ class TabQAgent(object):
                         # self.grid.print()
 
                         ## Figure out good amount to reward based on position and observations
+                        msg = world_state.observations[-1].text
+                        observations = json.loads(msg)
+
+                        self.grid.update(observations.get(u'floor7x7', 0))
                         
                         total_reward += self.act(world_state, agent_host, current_r)
                         break
@@ -289,13 +293,19 @@ class TabQAgent(object):
                         current_r += reward.getValue()
                 # allow time to stabilise after action
                 while True:
+
+
+                    
+                    
                     time.sleep(0.1)
                     world_state = agent_host.getWorldState()
                     for error in world_state.errors:
                         self.logger.error("Error: %s" % error.text)
                     for reward in world_state.rewards:
                         current_r += reward.getValue()
-                    if world_state.is_mission_running and len(world_state.observations)>0 and not world_state.observations[-1].text=="{}":  
+                    if world_state.is_mission_running and len(world_state.observations)>0 and not world_state.observations[-1].text=="{}":
+
+                        ## Rewards go here ?
                         visited = set()
                         observed = set()
                         msg = world_state.observations[-1].text
@@ -327,10 +337,8 @@ class TabQAgent(object):
                         
                         if current_coord not in visited:
                                         
-                            current_r += 5
+                            current_r += 2
                             visited.add(current_coord)
-                        if((xpos,zpos) != self.last_coords):
-                            current_r+= 2
                         
                         for i in range(7):
                             for j in range(7):
@@ -340,6 +348,11 @@ class TabQAgent(object):
                                     if coord not in observed:
                                         observed.add(coord)
                                         current_r += 3
+                                if bl == "gold_block":
+                                    coord = (xpos + j - 3, zpos + i - 3)
+                                    if coord not in observed:
+                                        observed.add(coord)
+                                        current_r += .1
                         total_reward += self.act(world_state, agent_host, current_r)
                         break
                     if not world_state.is_mission_running:
