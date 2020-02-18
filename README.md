@@ -31,7 +31,7 @@ Basic Q learning agent to traverse courses we can generate ad hoc<b>
 Genetic Algo agent to traverse courses we can generate ad hoc <b>
 
 Ambitious Goal: An agent that can complete popular public parkour courses<b>
-An agent which can generalize to unseen courses <b>
+An agent which can generalize to unseen courses <b> </b>
 
 
 ### How to use code
