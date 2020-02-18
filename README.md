@@ -42,7 +42,7 @@ Have malmo installed <br>
 Install QHops <br>
 Have a minecraft client running <br>
 Run the python files (BendJump.py and BendNoJump.py are agents with discrete movement commands, easy_dan is continuous) <br>
-else:
+else:<br> <br>
 Install the most applicable precompiled release and unzip<br>
 https://github.com/Microsoft/malmo/releases <br>
 Download Qhops<br>
