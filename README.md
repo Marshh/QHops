@@ -35,7 +35,8 @@ An agent which can generalize to unseen courses <b>
 
 
 ### How to use code
+
 Have malmo installed <b>
 Have a minecraft client running <b>
-Have the BendJump, Easy2, and EasyWalk world folders in the same directory as BendJump.py, BendNoJump.py, and easy_dan.py
-Run the python files (BendJump.py and BendNoJump.py are agents with discrete movement commands, easy_dan is continuous)
+Have the BendJump, Easy2, and EasyWalk world folders in the same directory as BendJump.py, BendNoJump.py, and easy_dan.py <b>
+Run the python files (BendJump.py and BendNoJump.py are agents with discrete movement commands, easy_dan is continuous) <b>
