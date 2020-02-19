@@ -8,6 +8,8 @@ Daniel Chiu <br>
 Joseph Lopez <br>
 Marshall Nguyen <br>
 
+https://marshh.github.io/QHops/
+
 ### Summary
 
 Minecraft parkour maps are a fun mode of gameplay wherein players navigate through courses composed of a multitude of obstacles with combinations of crouching, jumping, and sprinting motions. Players are not allowed to use items or place blocks onto the map while traversing a parkour course. The blocks the player must land on vary in height, distance,surface area and block type. A parkour course has the player start at a particular spot within the course and said player must reach a particular spot to complete the course. 
