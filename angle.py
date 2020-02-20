@@ -1,7 +1,7 @@
 # just testing stuff here
 
 # angles will be divided into multiples of 15
-# range of Yaw will be -180 to 180
+# range of Yaw will be (-180, 180]
 
 def nearest_angle(theta):
 	a = round(theta / 90) * 90
