@@ -38,6 +38,10 @@ Ambitious Goal: An agent that can complete popular public parkour courses<b>
 An agent which can generalize to unseen courses <b> </b>
 
 
+### Dependencies
+Tensorflow
+Keras
+
 ### How to use code
 If malmo is compiled from source:
 Have malmo installed <br>
