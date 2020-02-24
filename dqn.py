@@ -39,8 +39,8 @@ import pathlib
 import platform
 import math
 from grid2 import Grid
-from keras.model import Sequential
-from keras.model import Dense
+from keras.models import Sequential
+from keras.layers import Dense
 
 level_path = str(pathlib.Path().absolute())
 if platform.system() == "Windows":
@@ -176,7 +176,7 @@ class DQNAgent(object):
 
 	def updateQ( self, reward, current_state ):
 		old_q = self.q.predict(self.prev_s)
-		max_q = max(self.q.predict(current_state)
+		max_q = max(self.q.predict(current_state))
 		new_q = old_q + self.alpha * (reward + self.gamma * max_q - old_q)
 		self.q.fit(new_q,reward,epochs=1)
 	def updateQFromTerminatingState( self, reward ):
@@ -203,7 +203,7 @@ class DQNAgent(object):
 			a = random.randint(0, len(self.actions) - 1)
 			self.logger.info("Random action: %s" % self.actions[a])
 		else:
-			m = max(self.q.predict(current_s)
+			m = max(self.q.predict(current_s))
 			self.logger.debug("Current values: %s" % ",".join(str(x) for x in self.q.predict(current_s)))
 			l = list()
 			for x in range(0, len(self.actions)):
@@ -384,7 +384,7 @@ else:
 	import functools
 	print = functools.partial(print, flush=True)
 
-agent = TabQAgent()
+agent = DQNAgent()
 agent_host = MalmoPython.AgentHost()
 try:
 	agent_host.parse( sys.argv )
