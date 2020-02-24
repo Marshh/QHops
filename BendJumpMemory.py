@@ -269,9 +269,12 @@ class TabQAgent(object):
 
     def run(self, agent_host):
         """run the agent on the world"""
-        if pathlib.Path("data.json"):
-            with open("data.json") as f:
-                self.q_table = json.loads(f.read())
+        try:
+            if pathlib.Path("data.json"):
+                with open("data.json") as f:
+                    self.q_table = json.loads(f.read())
+        except:
+            self.q_table = {}
         total_reward = 0
         
         self.prev_s = None
