@@ -62,6 +62,9 @@ Implement Soft Actor Critic<br>
 Tensorflow
 Keras
 
+### References
+https://pylessons.com/CartPole-reinforcement-learning/
+
 ### How to use code
 If malmo is compiled from source:
 Have malmo installed <br>
