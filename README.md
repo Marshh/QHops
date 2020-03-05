@@ -26,15 +26,15 @@ To analyze our agent qualitatively we will have our agent traverse a multitude o
 
 ### Goals
 
-Minimum Goal: Basic parkour agent <b>
-Basic Q learning agent to traverse basic parkour courses <b>
-Basic Genetic Algo agent to traverse basic parkour courses <b>
+Minimum Goal: Basic parkour agent 
+Basic Q learning agent to traverse basic parkour courses 
+Basic Genetic Algo agent to traverse basic parkour courses 
 
-Realistic Goal: Intermediate parkour agent <b>
+Realistic Goal: Intermediate parkour agent 
 Basic Deep Q learning agent to traverse courses we can generate ad hoc<b>
 
 Ambitious Goal: An agent that can complete popular public parkour courses<b>
-An agent which can generalize to unseen courses <b> </b>
+An agent which can generalize to unseen courses  
 
 ### Completed goals:
 
