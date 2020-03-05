@@ -36,7 +36,7 @@ Basic Deep Q learning agent to traverse courses we can generate ad hoc<b>
 Ambitious Goal: An agent that can complete popular public parkour courses<b>
 An agent which can generalize to unseen courses  
 
-### Completed goals:
+### Completed goals
 
 Agent solving simple premade parkour course with discrete movement (no jumps) using Tabular Q-Learning
 Agent solving simple premade parkour course with discrete movement (with jumps) using Tabular Q-Learning
@@ -49,6 +49,7 @@ Agen solving simple premade parkour course with limited continuous movement (con
 
 ### Challenges faced:
 Agent does not feasibly learn to complete parkour courses with continuous movement using Tabular Q-Learning (Too many states and high entropy)
+
 Limited command set (cannot sprint, limited novel policies to learn)
 
 ### Current task:
