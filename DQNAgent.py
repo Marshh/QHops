@@ -38,11 +38,12 @@ import random
 import pathlib
 import platform
 import math
-    import keras
-    from keras.models import Sequential
-    from keras.layers import Input, Dense, Activation
-    from keras.models import Model, model_from_json
-    from keras.optimizers import Adam, RMSprop
+import keras
+from keras.models import Sequential
+from keras.layers import Input, Dense, Activation
+from keras.models import Model, model_from_json
+from keras.optimizers import Adam, RMSprop
+from collections import deque
 from grid2 import Grid
 
 level_path = str(pathlib.Path().absolute())
@@ -77,7 +78,7 @@ missionXML = '''
         <Weather>clear</Weather>
     </ServerInitialConditions>
     <ServerHandlers>
-        <FileWorldGenerator src="''' + level_path + '''"/>
+        <FlatWorldGenerator generatorString="2;7;1;"/>
         <DrawingDecorator>
         </DrawingDecorator>
         <ServerQuitFromTimeUp timeLimitMs="15000"/>
@@ -129,7 +130,10 @@ epsilon = 1.0  # exploration rate
 epsilon_min = 0.001
 epsilon_decay = 0.999
 batch_size = 64
+state_size = 99
+action_size = 9
 train_start = 1000
+
 
 block_values = {
     "air":0,
@@ -140,7 +144,7 @@ block_values = {
 ## Initialize DQN Model
 model = Sequential()
 model.add(Dense(99, input_dim=4, activation='relu'))
-model.add(Dense(8, activation='sigmoid'))
+model.add(Dense(9, activation='sigmoid'))
 model.compile(loss="mse", optimizer=RMSprop(lr=0.00025, rho=0.95, epsilon=0.01), metrics=["accuracy"])
 
 ## Determine what action to take based on the DQN Output
@@ -201,6 +205,7 @@ def replay():
             return
         # Randomly sample minibatch from the memory
         minibatch = random.sample(memory, min(len(memory), batch_size))
+
 
         state = np.zeros((batch_size, state_size))
         next_state = np.zeros((batch_size, state_size))
@@ -312,7 +317,7 @@ my_mission = MalmoPython.MissionSpec(missionXML, True)
 my_mission.drawBlock( 594,1,0,"lava")
 my_mission_record = MalmoPython.MissionRecordSpec()
 
-
+generate_flat_course(30, my_mission)
 
 # Attempt to start a mission:
 max_retries = 3
@@ -340,12 +345,6 @@ while not world_state.has_mission_begun:
 print()
 print("Mission running ", end=' ')
 
-#THE PLAN
-# observe a 7x7 grid under player
-# if the two tiles in front of player are 'air' then turn
-# if the two tiles are 'air' followed by 'gold_block' then jump
-# TODO: make sure to figure out agent's angle to determine which blocks are in front of it
-
 time.sleep(1) #to make sure everything is spawned in; might remove later
 if sys.version_info[0] == 2:
     sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)  # flush print output immediately
@@ -365,8 +364,7 @@ if agent_host.receivedArgument("help"):
     exit(0)
 
 # -- set up the mission -- #
-while world_state.is_mission_running:
-    #print(".", end="")
+for e in range(EPISODES):
     time.sleep(0.1)
     world_state = agent_host.getWorldState()
     for error in world_state.errors:
@@ -379,27 +377,51 @@ while world_state.is_mission_running:
         layers.extend(observations.get(u'layer_1', 0))
         yaw = observations.get(u'Yaw')   
 
-        state = layers.append(yaw)    
+        layers.append(yaw)
+        state = layers
+        done = False    
+    while world_state.is_mission_running:
+        #print(".", end="")
         
+            
         i = 0
         while not done:
-            action = self.act(state)
-            next_state, reward, done, _ = self.env.step(action)
-            next_state = np.reshape(next_state, [1, self.state_size])
-            if not done or i == self.env._max_episode_steps-1:
+            ## DQN returns index of maxd output value
+            predicted_action = act(state)
+            agent_host.sendCommand(action(predicted_action))
+            new_world_state = agent_host.getWorldState()
+            if world_state.number_of_observations_since_last_state > 0: 
+                msg = world_state.observations[-1].text                 
+                observations = json.loads(msg)  
+                new_layers = []                        
+                new_layers.extend(observations.get(u'layer_0', 0))
+                new_layers.extend(observations.get(u'layer_1', 0))
+                new_yaw = observations.get(u'Yaw')   
+                new_layers.append(new_yaw)
+            next_state = new_layers
+            reward = 0
+            for reward in new_world_state.rewards:
+                reward += reward.getValue()
+            if(reward == -1001 or reward == 999):
+                done = True
+            else:
+                done = False
+            next_state = np.reshape(next_state, [1, state_size])
+            if not done or i == env._max_episode_steps-1:
                 reward = reward
             else:
                 reward = -100
-            self.remember(state, action, reward, next_state, done)
+            remember(state, action, reward, next_state, done)
             state = next_state
             i += 1
             if done:                   
-                print("episode: {}/{}, score: {}, e: {:.2}".format(e, self.EPISODES, i, self.epsilon))
+                print("episode: {}/{}, score: {}, e: {:.2}".format(e, EPISODES, i, epsilon))
                 if i == 500:
-                    print("Saving trained model as cartpole-dqn.h5")
-                    self.save("cartpole-dqn.h5")
-                    return
-            self.replay()
+                    print("Saving trained model as parkour-dqn.h5")
+                    save("parkour-dqn.h5")
+                    break
+            replay()
+        break
 
 
 
