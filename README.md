@@ -2,7 +2,7 @@
 
 A Minecraft agent that learns to complete parkour courses through reinforcement learning <br>
 Group 49 <br>
-Interview time: 1:45pm on Tuesday February 18th, 2020<br> 
+Interview time: 1:45pm on Thursday March 5th, 2020<br> 
 Members:<br>
 Daniel Chiu <br>
 Joseph Lopez <br>
@@ -31,31 +31,31 @@ Basic Q learning agent to traverse basic parkour courses
 Basic Genetic Algo agent to traverse basic parkour courses 
 
 Realistic Goal: Intermediate parkour agent 
-Basic Deep Q learning agent to traverse courses we can generate ad hoc<b>
+Basic Deep Q learning agent to traverse courses we can generate ad hoc
 
-Ambitious Goal: An agent that can complete popular public parkour courses<b>
+Ambitious Goal: An agent that can complete popular public parkour courses
 An agent which can generalize to unseen courses  
 
 ### Completed goals
 
-Agent solving simple premade parkour course with discrete movement (no jumps) using Tabular Q-Learning
-Agent solving simple premade parkour course with discrete movement (with jumps) using Tabular Q-Learning
-(Both adapted cliffwalking challenge from Barto and Sutton)
-
-Agent learning generic and randomly made parkour courses with discrete movement (no jumps) using Tabular Q-Learning
-Agent learning generic and randomly made parkour courses with discrete movement (with jumps) using Tabular Q-Learning
-
-Agen solving simple premade parkour course with limited continuous movement (controlled turning) using Tabular Q-Learning with grid-based perception and discrete X/Y/Z states
+Agent solving simple premade parkour course with discrete movement (no jumps) using Tabular Q-Learning <br> 
+Agent solving simple premade parkour course with discrete movement (with jumps) using Tabular Q-Learning <br> 
+(Both adapted cliffwalking challenge from Barto and Sutton) <br> 
+<br> 
+Agent learning generic and randomly made parkour courses with discrete movement (no jumps) using Tabular Q-Learning<br> 
+Agent learning generic and randomly made parkour courses with discrete movement (with jumps) using Tabular Q-Learning<br> 
+<br> 
+Agen solving simple premade parkour course with limited continuous movement (controlled turning) using Tabular Q-Learning with grid-based perception and discrete X/Y/Z states<br> 
 
 ### Challenges faced:
-Agent does not feasibly learn to complete parkour courses with continuous movement using Tabular Q-Learning (Too many states and high entropy)
-
-Limited command set (cannot sprint, limited novel policies to learn)
-
+Agent does not feasibly learn to complete parkour courses with continuous movement using Tabular Q-Learning (Too many states and high entropy)<br> 
+<br> 
+Limited command set (cannot sprint, limited novel policies to learn)<br> 
+<br> 
 ### Current task:
-Implement an agent that uses Deep Q-Learning in order to solve courses with continuous movement commands
-Experiment with different neural network architectures and hyper-parameter tuning (current architecture is a an input layer of size 99, a single hidden layer of size 24, and an output layer of size 9 for each possible continuous command)
-Implement Soft Actor Critic
+Implement an agent that uses Deep Q-Learning in order to solve courses with continuous movement commands<br> 
+Experiment with different neural network architectures and hyper-parameter tuning (current architecture is a an input layer of size 99, a single hidden layer of size 24, and an output layer of size 9 for each possible continuous command)<br> 
+Implement Soft Actor Critic<br> 
 
 
 ### Dependencies
