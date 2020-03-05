@@ -31,11 +31,30 @@ Basic Q learning agent to traverse basic parkour courses <b>
 Basic Genetic Algo agent to traverse basic parkour courses <b>
 
 Realistic Goal: Intermediate parkour agent <b>
-Basic Q learning agent to traverse courses we can generate ad hoc<b>
-Genetic Algo agent to traverse courses we can generate ad hoc <b>
+Basic Deep Q learning agent to traverse courses we can generate ad hoc<b>
 
 Ambitious Goal: An agent that can complete popular public parkour courses<b>
 An agent which can generalize to unseen courses <b> </b>
+
+### Completed goals:
+
+Agent solving simple premade parkour course with discrete movement (no jumps) using Tabular Q-Learning
+Agent solving simple premade parkour course with discrete movement (with jumps) using Tabular Q-Learning
+(Both adapted cliffwalking challenge from Barto and Sutton)
+
+Agent learning generic and randomly made parkour courses with discrete movement (no jumps) using Tabular Q-Learning
+Agent learning generic and randomly made parkour courses with discrete movement (with jumps) using Tabular Q-Learning
+
+Agen solving simple premade parkour course with limited continuous movement (controlled turning) using Tabular Q-Learning with grid-based perception and discrete X/Y/Z states
+
+### Challenges faced:
+Agent does not feasibly learn to complete parkour courses with continuous movement using Tabular Q-Learning (Too many states and high entropy)
+Limited command set (cannot sprint, limited novel policies to learn)
+
+### Current task:
+Implement an agent that uses Deep Q-Learning in order to solve courses with continuous movement commands
+Experiment with different neural network architectures and hyper-parameter tuning (current architecture is a an input layer of size 99, a single hidden layer of size 24, and an output layer of size 9 for each possible continuous command)
+Implement Soft Actor Critic
 
 
 ### Dependencies
