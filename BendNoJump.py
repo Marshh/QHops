@@ -27,6 +27,7 @@ from builtins import object
 from builtins import range
 from past.utils import old_div
 import MalmoPython
+import matplotlib.pyplot as plt
 import os
 import sys
 import time
@@ -170,7 +171,7 @@ class TabQAgent(object):
     """Tabular Q-learning agent for discrete state/action spaces."""
 
     def __init__(self):
-        self.epsilon = 0.01 # chance of taking a random action instead of the best
+        self.epsilon = 0.5 # chance of taking a random action instead of the best
 
         self.logger = logging.getLogger(__name__)
         if False: # True if you want to see more information
@@ -497,7 +498,13 @@ for i in range(num_repeats):
 
     # -- clean up -- #
     time.sleep(0.5) # (let the Mod reset)
-
+    
+xi = [x for x in range(len(cumulative_rewards))]
+plt.figure()
+plt.xlabel("Episode")
+plt.ylabel("Cumulative Rewards")
+plt.plot(xi, cumulative_rewards)
+plt.savefig("DiscreteNoJump.png")
 print("Done.")
 
 print()
