@@ -146,6 +146,8 @@ def generate_flat_course(length,  mission):
             current_z += 1
         if random.randint(1,2)==1:
             current_y+=1
+            if current_y>2:
+                current_y=2
         my_mission.drawBlock(current_x, current_y, current_z, "gold_block")
 
     if random.randint(1,2) == 1:
@@ -470,7 +472,7 @@ plt.figure()
 plt.xlabel("Episode")
 plt.ylabel("Cumulative Rewards")
 plt.plot(xi, cumulative_rewards)
-plt.savefig("DiscreteRandomJumps.png")
+plt.savefig("DiscreteRandomJumpsBounded.png")
 print("Done.")
 
 print()
