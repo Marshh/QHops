@@ -148,6 +148,10 @@ def generate_flat_course(length,  mission):
             current_y+=1
             if current_y>2:
                 current_y=2
+            else:
+                current_y-=1
+            if current_y<0:
+                current_y=0
         my_mission.drawBlock(current_x, current_y, current_z, "gold_block")
 
     if random.randint(1,2) == 1:
@@ -156,6 +160,10 @@ def generate_flat_course(length,  mission):
         current_z += 1
     if random.randint(1,2)==1:
         current_y+=1
+    else:
+        current_y-=1
+        if current_y<0:
+            current_y=0
     goal_x = current_x
     goal_z = current_z
     my_mission.drawBlock(current_x, current_y, current_z, "lapis_block")
