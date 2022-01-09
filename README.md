@@ -1,13 +1,6 @@
 ## QHops
 
 A Minecraft agent that learns to complete parkour courses through reinforcement learning <br>
-Group 49 <br>
-Interview time: 1:45pm on Thursday March 5th, 2020<br> 
-Members:<br>
-Daniel Chiu <br>
-Joseph Lopez <br>
-Marshall Nguyen <br>
-
 https://marshh.github.io/QHops/
 
 ### Summary
